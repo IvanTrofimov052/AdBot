@@ -1,3 +1,5 @@
+# ToDo: chats id
+
 from telethon import TelegramClient, events, sync
 
 from config import *
@@ -12,19 +14,15 @@ print(client.get_me().stringify())
 
 list_id = sql.get_users_id()
 
-for id in list_id:
-    try:
-        client.send_message(id, 'Hello! Talking to you from Telethon and database')
-    except:
-        pass
-
-client.download_profile_photo('me')
-messages = client.get_messages('username')
-messages[0].download_media()
-
-
-@client.on(events.NewMessage(pattern='(?i)hi|hello'))
+@client.on(events.NewMessage(pattern=''))
 async def handler(event):
-    await event.respond('Hey!')
+    sender_id = str(event.sender_id)
+
+    if sender_id == admin_id:
+        for id in list_id:
+            await client.send_message(id, event.text)
+
+
+    await event.respond('Ok now it is working')
 
 client.run_until_disconnected()
